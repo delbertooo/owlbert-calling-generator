@@ -3,7 +3,7 @@
 ## With Docker
 
 ```
-docker-compose -f .\devtools\docker-compose.yml exec shell npm run serve
+docker-compose -f .\devtools\docker-compose.yml exec shell yarn serve
 ```
 
 ## Project setup
