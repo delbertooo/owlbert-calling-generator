@@ -3,7 +3,7 @@
     <v-row class="text-center">
       <v-col class="mb-4" cols="12">
         <h1 class="display-2 font-weight-bold">
-          Hit <span class="keybind">SPACE</span> to conduct callings.
+          Hit <span class="keybind">SPACE</span> to Conduct Callings
         </h1>
       </v-col>
 
@@ -12,13 +12,13 @@
           <source src="/owlbert.ogg" type="audio/ogg; codecs=vorbis"/>
           <source src="/owlbert.mp3" type="audio/mpeg"/>
         </audio>
-        callings here plz!
+        your current calling
         <div>
-          <span class="mx-2" v-for="(d, index) in preview" :key="index">{{d.duration}}</span>
+          <Calling v-bind:data="preview"/>
         </div>
-        callings
+        older callings
         <div v-for="(c, index) in callings" :key="index">
-          <span class="mx-2" v-for="(d, index) in c" :key="index">{{d.duration}}</span>
+          <Calling v-bind:data="c"/>
         </div>
       </v-col>
     </v-row>
@@ -28,6 +28,7 @@
 <script>
 import { fromEvent, merge } from "rxjs";
 import { map, withLatestFrom, filter, tap, debounceTime, buffer } from "rxjs/operators";
+import Calling from './Calling';
 
 function timestamp() {
   return new Date().getTime();
@@ -45,6 +46,10 @@ const STOP_CONDUCTING_AFTER_MS = 4000
 
 export default {
   name: "Generator",
+
+  components: {
+    Calling,
+  },
 
   created() {
     const keyDown$ = fromEvent(document, "keydown")

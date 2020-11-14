@@ -5,7 +5,7 @@
       color="primary"
       dark
     >
-      <v-toolbar-title>Owlbert Cage</v-toolbar-title>
+      <v-toolbar-title>Owlbert CaGe</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
