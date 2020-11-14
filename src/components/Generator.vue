@@ -60,6 +60,9 @@ export default {
     const keyUp$ = fromEvent(document, "keyup")
     const touchStart$ = fromEvent(document, "touchstart")
     const touchEnd$ = fromEvent(document, "touchend")
+    const enterPressed$ = keyUp$.pipe(
+      filter(e => e.key == 'Enter'),
+    )
 
     //merge(keyDown$, keyUp$).subscribe(e => console.log(e))
 
@@ -103,7 +106,8 @@ export default {
     instructions$.pipe(
       filter(x => !(this.preview.length === 0 && x.type == 'pause')), // ugly :(
       tap(x => this.preview = [...this.preview, x]),
-      buffer(longTimeNoSound$),
+      buffer(merge(longTimeNoSound$, enterPressed$)),
+      filter(c => c.length > 0),
       tap(() => this.preview = []),
       tap(x => console.log('calling', x)),
     ).subscribe(c => this.callings = [c, ...this.callings])
