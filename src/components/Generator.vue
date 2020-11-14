@@ -42,6 +42,10 @@ function noRepeat() {
   return filter(x => x && x.repeat == false)
 }
 
+function onlySpace() {
+  return filter(x => x && x.key == ' ')
+}
+
 const STOP_CONDUCTING_AFTER_MS = 4000
 
 export default {
@@ -57,8 +61,16 @@ export default {
 
     //merge(keyDown$, keyUp$).subscribe(e => console.log(e))
 
-    const starts$ = keyDown$.pipe(noRepeat(), map(() => ({ start: timestamp() })))
-    const ends$ = keyUp$.pipe(noRepeat(), map(() => ({ end: timestamp() })))
+    const starts$ = keyDown$.pipe(
+      onlySpace(),
+      noRepeat(),
+      map(() => ({ start: timestamp() })),
+    )
+    const ends$ = keyUp$.pipe(
+      onlySpace(),
+      noRepeat(),
+      map(() => ({ end: timestamp() })),
+    )
     
     //merge(starts$, ends$).subscribe(e => console.log(e))
 
