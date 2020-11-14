@@ -58,17 +58,21 @@ export default {
   created() {
     const keyDown$ = fromEvent(document, "keydown")
     const keyUp$ = fromEvent(document, "keyup")
+    const touchStart$ = fromEvent(document, "touchstart")
+    const touchEnd$ = fromEvent(document, "touchend")
 
     //merge(keyDown$, keyUp$).subscribe(e => console.log(e))
 
-    const starts$ = keyDown$.pipe(
-      onlySpace(),
-      noRepeat(),
+    const starts$ = merge(
+      touchStart$,
+      keyDown$.pipe(onlySpace(), noRepeat()),
+    ).pipe(
       map(() => ({ start: timestamp() })),
     )
-    const ends$ = keyUp$.pipe(
-      onlySpace(),
-      noRepeat(),
+    const ends$ = merge(
+      touchEnd$,
+      keyUp$.pipe(onlySpace(), noRepeat()),
+    ).pipe(
       map(() => ({ end: timestamp() })),
     )
     
