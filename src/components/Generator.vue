@@ -129,7 +129,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .keybind {
   background: #d9d9d9;
   font-size: 80%;

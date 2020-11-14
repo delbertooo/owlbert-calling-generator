@@ -49,3 +49,10 @@ export default {
 
 };
 </script>
+
+
+<style scoped>
+.player {
+  display: none;
+}
+</style>
