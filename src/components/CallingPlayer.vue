@@ -5,44 +5,48 @@
       <source src="/owlbert.mp3" type="audio/mpeg"/>
     </audio>
     
-    <v-btn elevation="2" icon v-on:click="play()">
-      <v-icon v-if="playing">mdi-pause</v-icon>
+    <v-btn elevation="2" icon v-on:click="togglePlay()">
+      <v-icon v-if="playing$.value">mdi-pause</v-icon>
       <v-icon v-else>mdi-play</v-icon>
     </v-btn>
     </div>
 </template>
 
 <script>
-import { timer, from } from "rxjs";
-import { concatMap, tap, finalize, takeWhile } from "rxjs/operators";
+import { timer, from, BehaviorSubject, EMPTY } from "rxjs";
+import { concatMap, tap, switchMap, finalize, skip } from "rxjs/operators";
 export default {
   name: "CallingPlayer",
 
   props: ['data'],
 
   data: () => ({
-    playing: false,
+    playing$: new BehaviorSubject(false),
   }),
 
+  created() {
+    this.playing$.pipe(
+      skip(1),
+      tap(() => this.$refs['player'].load()),
+      switchMap(p => {
+        if (!p) return EMPTY
+        else return from(this.data).pipe(
+          concatMap(x => {
+            if (x.type === 'sound') {
+              this.$refs['player'].play()
+            }
+            return timer(Math.abs(x.duration))
+          }),
+          tap(() => this.$refs['player'].load()),
+          finalize(() => this.playing$.next(false))
+        )
+      }),
+    ).subscribe()
+  },
+
   methods: {
-    play() {
-      if (this.playing) {
-        this.playing = false
-        this.$refs['player'].load()
-        return
-      }
-      this.playing = true;
-      from(this.data).pipe(
-        concatMap(x => {
-          if (x.type === 'sound') {
-            this.$refs['player'].play()
-          }
-          return timer(Math.abs(x.duration))
-        }),
-        takeWhile(() => this.playing),
-        tap(() => this.$refs['player'].load()),
-        finalize(() => this.playing = false),
-      ).subscribe()
+    togglePlay() {
+      this.playing$.next(!this.playing$.value)
     },
   },
 
