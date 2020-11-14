@@ -17,8 +17,9 @@
           <Calling v-bind:data="preview"/>
         </div>
         older callings
-        <div v-for="(c, index) in callings" :key="index">
+        <div v-for="(c, index) in callings" :key="index" class="my-5">
           <Calling v-bind:data="c"/>
+          <CallingPlayer v-bind:data="c"/>
         </div>
       </v-col>
     </v-row>
@@ -29,6 +30,7 @@
 import { fromEvent, merge } from "rxjs";
 import { map, withLatestFrom, filter, tap, debounceTime, buffer } from "rxjs/operators";
 import Calling from './Calling';
+import CallingPlayer from './CallingPlayer';
 
 function timestamp() {
   return new Date().getTime();
@@ -53,6 +55,7 @@ export default {
 
   components: {
     Calling,
+    CallingPlayer,
   },
 
   created() {
